@@ -1,0 +1,25 @@
+!!!
+%html
+  %head
+    / Developed by: Edwin Salinas (https://edos4.github.io)
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}/
+    -#%link{:href => "/logo.png", :sizes => "100x100", :rel => "icon", :type => "image/png"}/
+
+    %title #{ApplicationHelper.title}
+    -#= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+    -#= javascript_include_tag 'application', 'data-turbolinks-track' => true
+    %link{:href => "/assets/css/fa.css", :rel => "stylesheet"}/
+    %link{:href => "/bootstrap.css", :rel => "stylesheet"}/
+    %link{:href => "/login.css", :rel => "stylesheet"}/
+    %link{:href => "https://use.fontawesome.com/releases/v5.5.0/css/all.css", :rel => "stylesheet"}/
+    
+    = csrf_meta_tags
+  %body.white-bg
+    = yield
+    / Include javascript per-controller
+    / = javascript_include_tag params[:controller] #if ::Rails.application.assets.find_asset("#{params[:controller]}.js")
+    = yield :javascript
+  %script{:src => "/assets/js/bootstrap4.js"}
+  %script{:src => "/assets/js/jquery.js"}

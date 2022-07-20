@@ -1,0 +1,23 @@
+.container
+
+  .card.card-login.mx-auto.text-center
+    .row
+    .col-12.col-sm-8.offset-sm-2.col-md-6.offset-md-3.col-lg-6.offset-lg-3.col-xl-4.offset-xl-4
+      .login-brand.mb-2
+        %img.m-0{:alt => "logo", :src => "/logo.jpg", :width => "150"}/
+    .card-header
+      %span.logo_title.mt-5 #{ApplicationHelper.title}
+    .card-body
+      = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
+        .input-group.form-group
+          .input-group-prepend
+            %span.input-group-text
+              %i.fas.fa-user
+          = f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "Email", class: "form-control"
+        .input-group.form-group
+          .input-group-prepend
+            %span.input-group-text
+              %i.fas.fa-key
+          = f.password_field :password, autocomplete: "current-password", placeholder: "Password", class: "form-control"
+        .form-group
+          %input.btn.btn-outline-primary.float-right.login_btn{name: "btn", type: "submit", value: "Login"}/

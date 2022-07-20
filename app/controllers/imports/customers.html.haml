@@ -1,0 +1,97 @@
+%script{:src => "http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"}
+%script{:src => "http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/3.0.0/js/bootstrap-datetimepicker.min.js"}
+%section.section
+  .section-header.d-mobile-none
+    %h1 Imports
+    .section-header-breadcrumb
+      .breadcrumb-item 
+        = link_to 'Dashboard', '/'
+      .breadcrumb-item
+        Imports
+  = form_for("imports", url: imports_path, method: "post") do |f|
+    .card 
+      .card-body.form-group.mb-0
+        .form-row
+          .col-md-6.pt-3
+            = f.label "Book Value", :class => "control-label"
+            .custom-file
+              %label.custom-file-upload.form-control{:for => "file-6"}
+                %i.fa.fa-upload.pt-1.float-right
+                Choose Excel File
+              = f.file_field :book_value, :class => "custom-file-input d-none", :id => "file-6"
+      .card-footer.float-right
+        = f.submit 'Upload Files', class: 'btn btn-warning'
+:javascript
+  $('.chosen-select').select2();
+  $(document).ready(function(){
+    $('#file-1').change(function() {
+      var i = $(this).prev('label').clone();
+      var file = $('#file-1')[0].files[0].name;
+      $(this).prev('label').text(file);
+    }); 
+    $('#file-2').change(function() {
+      var i = $(this).prev('label').clone();
+      var file = $('#file-2')[0].files[0].name;
+      $(this).prev('label').text(file);
+    });  
+    $('#file-3').change(function() {
+      var i = $(this).prev('label').clone();
+      var file = $('#file-3')[0].files[0].name;
+      $(this).prev('label').text(file);
+    });  
+    $('#file-4').change(function() {
+      var i = $(this).prev('label').clone();
+      var file = $('#file-4')[0].files[0].name;
+      $(this).prev('label').text(file);
+    });  
+    $('#file-5').change(function() {
+      var i = $(this).prev('label').clone();
+      var file = $('#file-5')[0].files[0].name;
+      $(this).prev('label').text(file);
+    });  
+    $('#file-6').change(function() {
+      var i = $(this).prev('label').clone();
+      var file = $('#file-6')[0].files[0].name;
+      $(this).prev('label').text(file);
+    });  
+    $("#userProfilePicture").change(function(){
+        readURL(this);
+    });
+
+    $('.custom-file-input input').datepicker({
+       format: "dd.mm.yyyy",
+       todayBtn: "linked",
+       language: "de"
+    });
+  });
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#wizardPicturePreview').attr('src', e.target.result).fadeIn('slow');
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  function check_email_duplication(email_field){
+    $.ajax({
+      url: "/personnels/check_email_duplication",
+      type: 'POST',
+      data: {
+        email: email_field.value
+      },
+      async: true,
+      dataType: "json",
+      error: function(XMLHttpRequest, errorTextStatus, error){
+                  console.log("Failed: "+ errorTextStatus+" ;"+error);
+              },
+      success: function(data){
+        if(data > 0){
+          alert('Email is taken. Please try another one.');
+          $('#email').val("");
+        }
+      }
+    });
+  }

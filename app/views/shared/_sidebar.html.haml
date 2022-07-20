@@ -1,0 +1,33 @@
+.main-sidebar.sidebar-style-2
+  %aside#sidebar-wrapper
+    .sidebar-brand
+      = link_to ApplicationHelper.title, root_path
+    .sidebar-brand.sidebar-brand-sm
+      = link_to ApplicationHelper.title_initials, root_path
+    %ul.sidebar-menu{"data-controller" => "sidebar"}
+      %li{:class => "#{active_nav_item('home', 'index')}"}
+        = link_to root_path, class: "nav-link" do
+          %i.fas.fa-fire
+          %span Dashboard
+    %ul.sidebar-menu{"data-controller" => "sidebar"}
+      %li{:class => "#{active_nav_item('citizens', 'index')}"}
+        = link_to citizens_path, class: "nav-link" do
+          %i.fas.fa-users
+          %span Members
+    %ul.sidebar-menu{"data-controller" => "sidebar"}
+      %li{:class => "#{active_nav_item('tags', 'index')}"}
+        = link_to tags_path, class: "nav-link" do
+          %i.fas.fa-tags
+          %span Tags
+    %ul.sidebar-menu{"data-controller" => "sidebar"}
+      %li{:class => "#{active_nav_item('sms', 'index')}"}
+        = link_to sms_path, class: "nav-link" do
+          %i.fas.fa-sms
+          %span Send SMS
+    %ul.sidebar-menu{"data-controller" => "sidebar"}
+      %li{:class => "#{active_nav_item('import', 'members')}"}
+        = link_to imports_members_path, class: "nav-link" do
+          %i.fas.fa-file-import
+          %span Import
+      /%li.menu-header Controllers
+      /= render 'shared/sidebar_dropdown', title: 'Resources', icon: 'fas fa-file-alt'
