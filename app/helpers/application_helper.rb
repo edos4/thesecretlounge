@@ -1,6 +1,6 @@
 module ApplicationHelper
   def self.title
-    "Monitoring System"
+    "The Secret Lounge"
   end
 
   def self.title_initials

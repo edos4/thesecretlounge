@@ -2,27 +2,19 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-
-development:
-  <<: *default
-  database: base_dev
-  username: postgres
-  host: localhost
-  password: postgres
-
-test:
-  <<: *default
-  database: base_test
-  username: postgres
-  password: postgres
-  host: localhost
-
-production:
-  <<: *default
-  adapter: postgresql
-  encoding: unicode
-  database: base_prod
   username: postgres
   password: postgres
   host: localhost
   port: 5432
+
+development:
+  <<: *default
+  database: tsl_postgresql
+  
+test:
+  <<: *default
+  database: tsl_test
+
+production:
+  <<: *default
+  database: tsl_prod
