@@ -9,11 +9,12 @@
         = link_to root_path, class: "nav-link" do
           %i.fas.fa-fire
           %span Dashboard
-    -# %ul.sidebar-menu{"data-controller" => "sidebar"}
-    -#   %li{:class => "#{active_nav_item('citizens', 'index')}"}
-    -#     = link_to citizens_path, class: "nav-link" do
-    -#       %i.fas.fa-users
-    -#       %span Members
+    
+    %ul.sidebar-menu{"data-controller" => "sidebar"}
+      %li{:class => "#{active_nav_item('citizens', 'index')}"}
+        = link_to branches_path, class: "nav-link" do
+          %i.fa.fa-city
+          %span Branches
     -# %ul.sidebar-menu{"data-controller" => "sidebar"}
     -#   %li{:class => "#{active_nav_item('tags', 'index')}"}
     -#     = link_to tags_path, class: "nav-link" do
