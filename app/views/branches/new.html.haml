@@ -1,0 +1,15 @@
+%section.section
+  .section-header.d-mobile-none
+    %h1 Branches
+    .section-header-breadcrumb
+      .breadcrumb-item= link_to 'Dashboard', root_path
+      .breadcrumb-item= link_to 'Branches', branches_path
+      .breadcrumb-item New Branch
+  .section-body
+    .card
+      .card-header
+        %h4 New Branch
+      .card-body
+        = render 'form', branch: @branch
+= link_to icon('fas fa-arrow-left', 'Back'), 'javascript:history.back()', class: 'btn btn-icon icon-left btn-secondary d-mobile-none'
+- content_for(:page_title, 'New Branch')

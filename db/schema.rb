@@ -10,13 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_04_023934) do
+ActiveRecord::Schema.define(version: 2022_10_04_024620) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "branches", force: :cascade do |t|
     t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "members", force: :cascade do |t|
+    t.string "name"
+    t.string "email"
+    t.string "contact_number"
+    t.string "address"
+    t.integer "branch_id"
+    t.string "slug"
+    t.string "membership_card_number"
+    t.date "expiry_date"
+    t.integer "beauty_bank"
+    t.integer "loyalty_points"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

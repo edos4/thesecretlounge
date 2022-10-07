@@ -2,6 +2,30 @@ class ImportsController < ApplicationController
   def members
   end
 
+  def export_qr
+    require 'zip'
+
+    @members = Member.all
+    @folder_name = SecureRandom.hex
+
+    Member.all.each do |member|
+      Qr.printqr("#{member.membership_card_number}", @folder_name, member.name)
+    end
+
+    files = Dir.glob("app/public/uploads/#{@folder_name}/*final*.png")
+    zip_file = "app/public/uploads/#{@folder_name}/qr_export.zip"
+
+    File.delete(zip_file) if File.exist?(zip_file)
+
+    Zip::File.open(zip_file, Zip::File::CREATE) do |z|
+      files.each do |f|
+        z.add(f.split("/").last, f)
+      end
+    end
+
+    send_file zip_file, type: 'application/zip', disposition: 'attachment', filename: "qr_export.zip"
+  end
+
   def upload_members
     begin
       current_name = ""
@@ -15,20 +39,33 @@ class ImportsController < ApplicationController
       (2..spreadsheet.last_row).each do |i|
         #puts "#{spreadsheet.row(i)[0]} #{spreadsheet.row(i)[1]}"
         name = spreadsheet.row(i)[0]
-        mobile_number = spreadsheet.row(i)[1]
+        email = spreadsheet.row(i)[1]
+        contact_number = spreadsheet.row(i)[2]
+        address = spreadsheet.row(i)[3]
+        branch = spreadsheet.row(i)[4]
+        membership_card_number = spreadsheet.row(i)[5]
+        expiry_date = Date.parse(spreadsheet.row(i)[6])
+        beauty_bank = spreadsheet.row(i)[7]
+        loyalty_points = spreadsheet.row(i)[8]
 
-        member = Citizen.create(name: name, mobile_number: mobile_number)
+        member = Member.create(
+          name: name, 
+          contact_number: contact_number,
+          email: email,
+          address: address,
+          branch: Branch.find_by(name: branch),
+          membership_card_number: membership_card_number,
+          expiry_date: expiry_date,
+          beauty_bank: beauty_bank,
+          loyalty_points: loyalty_points
+        )
 
-        tag_array = spreadsheet.row(i)[2].split(',')
-        tag_array.each do |tag|
-          member.tags << Tag.find_by(name: tag)
-        end
       end
       flash[:notice] = "Records Imported"
-      redirect_to '/citizens' 
+      redirect_to '/members' 
     rescue Exception => e
       flash[:alert] = "Issues with Member List. Error: #{e}. #{current_name}"
-      redirect_to '/imports/members' 
+      redirect_to '/members' 
     end
   end
 end

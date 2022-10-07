@@ -1,0 +1,6 @@
+= form_with(model: branch, data: { controller: 'validation' }) do |form|
+  .form-group
+    = form.label :name
+    = form.text_field :name, class: 'form-control'
+  .card-footer.pl-0
+    = form.submit class: 'btn btn-primary'

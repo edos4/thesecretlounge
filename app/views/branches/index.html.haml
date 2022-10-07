@@ -1,0 +1,41 @@
+%section.section
+  .section-header.d-mobile-none
+    %h1 Branches
+    .section-header-breadcrumb
+      .breadcrumb-item= link_to 'Dashboard', root_path
+      .breadcrumb-item List of Branches
+  .section-body
+    .card
+      .card-header
+        %h4 List of Branches
+        .card-header-action
+          = link_to icon('fas fa-plus', 'New Branch'), new_branch_path, class: 'btn btn-icon icon-left btn-primary'
+          = render 'shared/card_dropdown' do
+            = link_to icon('fas fa-download', 'Export Data'), branches_path(format: :csv, q: request.params[:q]), class: 'dropdown-item has-icon'
+            = link_to icon('fas fa-print', 'Print Page'), 'javascript:window.print()', class: 'dropdown-item has-icon'
+      .card-body{"data-controller" => "infinite-page"}
+        /
+          <#= search_form_for @search, remote: true, data: { controller: 'turbolinks-form' }, html: { class: 'form-row' } do |f| #>
+          <div class="form-group col-sm-10">
+          <#= f.text_field :name_cont, class: 'form-control m-input m-input--solid', placeholder: 'Name' #>
+          </div>
+          <div class="form-group col-sm-2 text-right">
+          <#= f.button icon('fas fa-search', 'Search'), name: nil, class: 'btn btn-icon icon-left btn-primary' #>
+          </div>
+          <# end #>
+        .table-responsive
+          %table.table.table-striped.table-md
+            %thead
+              %tr
+                %th= sort_link_turbo(@search, :name)
+                %th Actions
+            %tbody{"data-target" => "infinite-page.container"}
+              - @branches.each do |branch|
+                %tr{"data-target" => "infinite-page.item"}
+                  %td= branch.name
+                  %td
+                    = link_to icon('fas fa-eye'), branch, title: 'Show it', class: 'btn btn-icon btn-sm btn-info mr-1'
+                    = link_to icon('fas fa-edit'), edit_branch_path(branch), title: 'Edit it', class: 'btn btn-icon btn-sm btn-warning mr-1'
+                    = link_to icon('fas fa-trash'), branch, title: 'Destroy it', class: 'btn btn-icon btn-sm btn-danger', method: :delete, data: { confirm: 'Are you sure?', remote: true }
+          = link_to 'Next page', branches_path(page: @page.next_number, q: request.params[:q]), data: { target: 'infinite-page.more' } unless @page.last?
+- content_for(:page_title, 'List of Branches')

@@ -1,0 +1,77 @@
+%link{:href => "https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css", :rel => "stylesheet"}
+%link{:href => "https://cdn.datatables.net/responsive/2.2.7/css/responsive.dataTables.min.css", :rel => "stylesheet"}
+
+%script{:src => "https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js", :type => "text/javascript"}
+%script{:src => "https://cdn.datatables.net/responsive/2.2.7/js/dataTables.responsive.min.js", :type => "text/javascript"}
+
+
+%section.section
+  .section-header.d-mobile-none
+    %h1 Members
+    .section-header-breadcrumb
+      .breadcrumb-item= link_to 'Dashboard', root_path
+      .breadcrumb-item List of Members
+  .section-body
+    .card
+      .card-header
+        %h4 List of Members
+        .card-header-action
+          = link_to icon('fas fa-plus', 'New Member'), new_member_path, class: 'btn btn-icon icon-left btn-primary'
+          = render 'shared/card_dropdown' do
+            = link_to icon('fas fa-download', 'Export Data'), members_path(format: :csv, q: request.params[:q]), class: 'dropdown-item has-icon'
+            = link_to icon('fas fa-print', 'Print Page'), 'javascript:window.print()', class: 'dropdown-item has-icon'
+      .card-body{"data-controller" => "infinite-page"}
+        - if @members.present?
+          = link_to "Export QRs", export_qr_imports_path, target: :_blank
+        /
+          <#= search_form_for @search, remote: true, data: { controller: 'turbolinks-form' }, html: { class: 'form-row' } do |f| #>
+          <div class="form-group col-sm-10">
+          <#= f.text_field :name_cont, class: 'form-control m-input m-input--solid', placeholder: 'Name' #>
+          </div>
+          <div class="form-group col-sm-2 text-right">
+          <#= f.button icon('fas fa-search', 'Search'), name: nil, class: 'btn btn-icon icon-left btn-primary' #>
+          </div>
+          <# end #>
+        .table-responsive
+          %table.table.table-bordered.table-hover.dt-responsive
+            %thead
+              %tr
+                %th= sort_link_turbo(@search, :name)
+                %th= sort_link_turbo(@search, :email)
+                %th= sort_link_turbo(@search, :contact_number)
+                %th= sort_link_turbo(@search, :address)
+                %th= sort_link_turbo(@search, :branch)
+                %th= sort_link_turbo(@search, :membership_card_number)
+                %th= sort_link_turbo(@search, :expiry_date)
+                %th= sort_link_turbo(@search, :beauty_bank)
+                %th= sort_link_turbo(@search, :loyalty_points)
+                %th Actions
+            %tbody{"data-target" => "infinite-page.container"}
+              - @members.each do |member|
+                %tr{"data-target" => "infinite-page.item"}
+                  %td= member.name
+                  %td= member.email
+                  %td= member.contact_number
+                  %td= member.address
+                  %td= member.branch.name
+                  %td= member.membership_card_number
+                  %td= (member.expiry_date)
+                  %td= member.beauty_bank
+                  %td= member.loyalty_points
+                  %td
+                    = link_to icon('fas fa-eye'), member, title: 'Show it', class: 'btn btn-icon btn-sm btn-info mr-1'
+                    = link_to icon('fas fa-edit'), edit_member_path(member), title: 'Edit it', class: 'btn btn-icon btn-sm btn-warning mr-1'
+                    = link_to icon('fas fa-trash'), member, title: 'Destroy it', class: 'btn btn-icon btn-sm btn-danger', method: :delete, data: { confirm: 'Are you sure?', remote: true }
+          = link_to 'Next page', members_path(page: @page.next_number, q: request.params[:q]), data: { target: 'infinite-page.more' } unless @page.last?
+- content_for(:page_title, 'List of Members')
+
+:javascript
+  $(document).ready( function () {
+    var dataTable = $('table').DataTable();
+    document.addEventListener("turbolinks:before-cache", function() {
+      if (dataTable !== null) {
+       dataTable.destroy();
+       dataTable = null;
+      }
+    });
+  } );

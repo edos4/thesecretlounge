@@ -32,6 +32,12 @@ gem "haml-rails", "~> 2.0"
 gem "pry"
 gem 'dotenv-rails', :require => 'dotenv/rails-now'
 gem 'devise'
+gem 'rqrcode-with-patches', '~> 0.5.4'
+
+gem 'rqrcode_png'
+gem 'rmagick'
+gem 'rubyzip'
+
 
 # app-specific
 gem 'popper_js', '~> 1.11.1'

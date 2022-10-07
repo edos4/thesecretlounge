@@ -1,0 +1,75 @@
+class MembersController < ApplicationController
+  before_action :set_member, only: %i[ show edit update destroy ]
+
+  def import
+
+  end
+
+  def upload
+
+  end
+
+  def check
+    @member = Member.find_by(membership_card_number: params['membership_card_number'])
+    if @member.present?
+      render json: @member.id
+    else
+      render json: {message: 'Not found'}
+    end
+  end
+
+  def index
+    @search = Member.reverse_chronologically.ransack(params[:q])
+
+    respond_to do |format|
+      format.any(:html, :json) { @members = set_page_and_extract_portion_from @search.result }
+      format.csv { render csv: @search.result }
+    end
+  end
+
+  def show
+    fresh_when etag: @member
+  end
+
+  def new
+    @member = Member.new
+  end
+
+  def edit
+  end
+
+  def create
+    @member = Member.new(member_params)
+    @member.save!
+
+    respond_to do |format|
+      format.html { redirect_to @member, notice: 'Member was successfully created.' }
+      format.json { render :show, status: :created }
+    end
+  end
+
+  def update
+    @member.update!(member_params)
+    respond_to do |format|
+      format.html { redirect_to @member, notice: 'Member was successfully updated.' }
+      format.json { render :show }
+    end
+  end
+
+  def destroy
+    @member.destroy
+    respond_to do |format|
+      format.html { redirect_to members_url, notice: 'Member was successfully destroyed.' }
+      format.json { head :no_content }
+    end
+  end
+
+  private
+    def set_member
+      @member = Member.find(params[:id])
+    end
+
+    def member_params
+      params.require(:member).permit(:name, :email, :contact_number, :address, :branch_id, :slug, :membership_card_number, :expiry_date, :beauty_bank, :loyalty_points)
+    end
+end

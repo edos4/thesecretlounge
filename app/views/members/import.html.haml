@@ -8,7 +8,7 @@
         = link_to 'Dashboard', '/'
       .breadcrumb-item
         Imports
-  = form_for("imports", url: imports_members_path, method: "post") do |f|
+  = form_for("imports", url: upload_members_imports_path, method: "post") do |f|
     .card 
       = link_to icon('fas fa-download', 'Download Template'), '/members.xlsx', class: 'dropdown-item has-icon' 
       .card-body.form-group.mb-0

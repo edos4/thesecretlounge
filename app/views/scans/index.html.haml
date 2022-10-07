@@ -1,0 +1,153 @@
+- if @events_company.present?
+  Welcome,
+  = @events_company.company.name
+  %br
+  = link_to "View Scanned Data", view_scans_participants_path
+
+#loadingMessage 🎥 Unable to access video stream (please make sure you have a camera enabled)
+%canvas#canvas{:hidden => ""}
+#output{:hidden => ""}
+  #outputMessage No QR Code detected.
+  %div{:hidden => ""}
+    %b Data:
+    %span#outputData
+
+- if session['loggedin_type'] == 'volunteer'
+  %p Scan for:
+  .radio
+    %label
+      %input{name: "scan_type", type: "radio", value: "snacks", id: "scan_type"}
+      Snacks    
+  .radio
+    %label
+      %input{name: "scan_type", type: "radio", value: "lunch", id: "scan_type"}
+      Lunch
+
+/%script{:src => "./jquery-3.4.1.min.js"}
+%link{:rel => :stylesheet, :type => :"text/css", :href => "./toast.css"}
+%script{:src => "./toast.js"}
+%script{:src => "./jsqr.js"}
+
+:css
+
+  h1 {
+    margin: 10px 0;
+    font-size: 40px;
+  }
+
+  #loadingMessage {
+    text-align: center;
+    padding: 40px;
+    background-color: #eee;
+  }
+
+  #canvas {
+    width: 100%;
+  }
+
+  #output {
+    margin-top: 20px;
+    background: #eee;
+    padding: 10px;
+    padding-bottom: 0;
+  }
+
+  #output div {
+    padding-bottom: 10px;
+    word-wrap: break-word;
+  }
+
+  #noQRFound {
+    text-align: center;
+  }
+
+:javascript
+  var video = document.createElement("video");
+  var canvasElement = document.getElementById("canvas");
+  var canvas = canvasElement.getContext("2d");
+  var loadingMessage = document.getElementById("loadingMessage");
+  var outputContainer = document.getElementById("output");
+  var outputMessage = document.getElementById("outputMessage");
+  var outputData = document.getElementById("outputData");
+  var has_code = false
+
+  function drawLine(begin, end, color) {
+    canvas.beginPath();
+    canvas.moveTo(begin.x, begin.y);
+    canvas.lineTo(end.x, end.y);
+    canvas.lineWidth = 4;
+    canvas.strokeStyle = color;
+    canvas.stroke();
+  }
+
+  // Use facingMode: environment to attemt to get the front camera on phones
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then(function(stream) {
+    video.srcObject = stream;
+    video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
+    video.play();
+    requestAnimationFrame(tick);
+  });
+
+  function tick() {
+    if(has_code == true){
+      return
+    }
+    loadingMessage.innerText = "⌛ Loading video..."
+    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+      loadingMessage.hidden = true;
+      canvasElement.hidden = false;
+      outputContainer.hidden = false;
+
+      canvasElement.height = video.videoHeight;
+      canvasElement.width = video.videoWidth;
+      canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+      var imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+      var code = jsQR(imageData.data, imageData.width, imageData.height, {
+        inversionAttempts: "dontInvert",
+      });
+      if (code) {
+        has_code = true
+        drawLine(code.location.topLeftCorner, code.location.topRightCorner, "#FF3B58");
+        drawLine(code.location.topRightCorner, code.location.bottomRightCorner, "#FF3B58");
+        drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner, "#FF3B58");
+        drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, "#FF3B58");
+        outputMessage.hidden = true;
+        outputData.parentElement.hidden = false;
+
+        
+        scanned_data = code.data     
+        
+        outputData.innerText = scanned_data;
+
+        // send data
+        $.ajax({
+          url: "/members/check", // this will be routed
+          type: 'POST',
+          data: {
+            membership_card_number: scanned_data
+          },
+          async: true,
+          dataType: "json",
+          error: function(XMLHttpRequest, errorTextStatus, error){
+                    console.log("Failed: "+ errorTextStatus+" ;"+error);
+          },
+          success: function(data){
+            if(data.message == "Not found"){
+              alert("Not found")
+            }else{
+              window.location = "/members/"+data
+            }
+          }
+        });
+        return;
+        has_code = false;
+        // end send data
+        //window.location = "/members/"+scanned_data
+        
+      } else {
+        outputMessage.hidden = false;
+        outputData.parentElement.hidden = true;
+      }
+    }
+    requestAnimationFrame(tick);
+  }

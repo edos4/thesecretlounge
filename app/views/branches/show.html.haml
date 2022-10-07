@@ -1,0 +1,18 @@
+%section.section
+  .section-header.d-mobile-none
+    %h1 Branches
+    .section-header-breadcrumb
+      .breadcrumb-item= link_to 'Dashboard', root_path
+      .breadcrumb-item= link_to 'Branches', branches_path
+      .breadcrumb-item Show Branch
+  .section-body
+    .card
+      .card-header
+        %h4 Show Branch
+      .card-body
+        %dl.row
+          %dt.col-sm-3 Name:
+          %dd.col-sm-9= @branch.name
+= link_to icon('fas fa-edit', 'Edit'), edit_branch_path(@branch), data: { turbolinks_action: 'replace' }, class: 'btn btn btn-icon icon-left btn-warning'
+= link_to icon('fas fa-arrow-left', 'Back'), 'javascript:history.back()', class: 'btn btn-icon icon-left btn-secondary d-mobile-none'
+- content_for(:page_title, 'Show Branch')

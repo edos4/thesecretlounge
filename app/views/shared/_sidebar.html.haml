@@ -9,12 +9,18 @@
         = link_to root_path, class: "nav-link" do
           %i.fas.fa-fire
           %span Dashboard
-    
     %ul.sidebar-menu{"data-controller" => "sidebar"}
-      %li{:class => "#{active_nav_item('citizens', 'index')}"}
+      %li{:class => "#{active_nav_item('branches', 'index')}"}
         = link_to branches_path, class: "nav-link" do
           %i.fa.fa-city
           %span Branches
+    
+    %ul.sidebar-menu{"data-controller" => "sidebar"}
+      %li{:class => "#{active_nav_item('members', 'index')}"}
+        = link_to members_path, class: "nav-link" do
+          %i.fas.fa-users
+          %span Members
+        
     -# %ul.sidebar-menu{"data-controller" => "sidebar"}
     -#   %li{:class => "#{active_nav_item('tags', 'index')}"}
     -#     = link_to tags_path, class: "nav-link" do
@@ -25,10 +31,15 @@
     -#     = link_to sms_path, class: "nav-link" do
     -#       %i.fas.fa-sms
     -#       %span Send SMS
-    -# %ul.sidebar-menu{"data-controller" => "sidebar"}
-    -#   %li{:class => "#{active_nav_item('import', 'members')}"}
-    -#     = link_to imports_members_path, class: "nav-link" do
-    -#       %i.fas.fa-file-import
-    -#       %span Import
+    %ul.sidebar-menu{"data-controller" => "sidebar"}
+      %li{:class => "#{active_nav_item('import', 'members#import')}"}
+        = link_to import_members_path, class: "nav-link" do
+          %i.fas.fa-file-import
+          %span Import
+    %ul.sidebar-menu{"data-controller" => "sidebar"}
+      %li{:class => "#{active_nav_item('scans', 'index')}"}
+        = link_to scan_path, class: "nav-link" do
+          %i.fas.fa-qrcode
+          %span Scan
       /%li.menu-header Controllers
       /= render 'shared/sidebar_dropdown', title: 'Resources', icon: 'fas fa-file-alt'
