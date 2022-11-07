@@ -41,7 +41,8 @@
                 %th= sort_link_turbo(@search, :contact_number)
                 %th= sort_link_turbo(@search, :address)
                 %th= sort_link_turbo(@search, :branch)
-                %th= sort_link_turbo(@search, :membership_card_number)
+                %th= sort_link_turbo(@search, :card_number)
+                %th= sort_link_turbo(@search, :membership_date)
                 %th= sort_link_turbo(@search, :expiry_date)
                 %th= sort_link_turbo(@search, :beauty_bank)
                 %th= sort_link_turbo(@search, :loyalty_points)
@@ -55,6 +56,7 @@
                   %td= member.address
                   %td= member.branch.name
                   %td= member.membership_card_number
+                  %td= (member.membership_date)
                   %td= (member.expiry_date)
                   %td= member.beauty_bank
                   %td= member.loyalty_points

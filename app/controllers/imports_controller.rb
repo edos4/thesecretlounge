@@ -44,9 +44,10 @@ class ImportsController < ApplicationController
         address = spreadsheet.row(i)[3]
         branch = spreadsheet.row(i)[4]
         membership_card_number = spreadsheet.row(i)[5]
-        expiry_date = Date.parse(spreadsheet.row(i)[6])
-        beauty_bank = spreadsheet.row(i)[7]
-        loyalty_points = spreadsheet.row(i)[8]
+        membership_date = Date.parse(spreadsheet.row(i)[6])
+        expiry_date = Date.parse(spreadsheet.row(i)[7])
+        beauty_bank = spreadsheet.row(i)[8]
+        loyalty_points = spreadsheet.row(i)[9]
 
         member = Member.create(
           name: name, 
@@ -55,6 +56,7 @@ class ImportsController < ApplicationController
           address: address,
           branch: Branch.find_by(name: branch),
           membership_card_number: membership_card_number,
+          membership_date: membership_date,
           expiry_date: expiry_date,
           beauty_bank: beauty_bank,
           loyalty_points: loyalty_points
