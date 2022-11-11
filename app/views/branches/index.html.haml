@@ -28,13 +28,15 @@
             %thead
               %tr
                 %th= sort_link_turbo(@search, :name)
+                %th Expired
                 %th Actions
             %tbody{"data-target" => "infinite-page.container"}
               - @branches.each do |branch|
                 %tr{"data-target" => "infinite-page.item"}
                   %td= branch.name
+                  %td= branch.expired_count
                   %td
-                    = link_to icon('fas fa-eye'), branch, title: 'Show it', class: 'btn btn-icon btn-sm btn-info mr-1'
+                    = link_to icon('fas fa-eye'), "/members?branch_id=#{branch.id}", title: 'Show it', class: 'btn btn-icon btn-sm btn-info mr-1'
                     = link_to icon('fas fa-edit'), edit_branch_path(branch), title: 'Edit it', class: 'btn btn-icon btn-sm btn-warning mr-1'
                     = link_to icon('fas fa-trash'), branch, title: 'Destroy it', class: 'btn btn-icon btn-sm btn-danger', method: :delete, data: { confirm: 'Are you sure?', remote: true }
           = link_to 'Next page', branches_path(page: @page.next_number, q: request.params[:q]), data: { target: 'infinite-page.more' } unless @page.last?

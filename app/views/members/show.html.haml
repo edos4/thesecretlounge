@@ -23,8 +23,13 @@
           %dd.col-sm-9= @member.branch.name
           %dt.col-sm-3 Membership card number:
           %dd.col-sm-9= @member.membership_card_number
+          %dt.col-sm-3 Membership date:
+          %dd.col-sm-9= (@member.membership_date)
           %dt.col-sm-3 Expiry date:
-          %dd.col-sm-9= (@member.expiry_date)
+          - if @member.expiry_date < Time.zone.now 
+            %dd.col-sm-9.alert-danger= (@member.expiry_date)
+          - else 
+            %dd.col-sm-9= (@member.expiry_date)
           %dt.col-sm-3 Beauty bank:
           %dd.col-sm-9= @member.beauty_bank
           %dt.col-sm-3 Loyalty points:

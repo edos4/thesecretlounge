@@ -18,8 +18,11 @@
     = form.label :membership_card_number
     = form.text_field :membership_card_number, class: 'form-control'
   .form-group
+    = form.label :membership_date
+    = form.date_field :membership_date, value: (@member.membership_date), class: 'form-control datepicker'
+  .form-group
     = form.label :expiry_date
-    = form.text_field :expiry_date, value: (member.expiry_date), class: 'form-control', data: { controller: 'date' }
+    = form.date_field :expiry_date, value: (@member.expiry_date), class: 'form-control datepicker'
   .form-group
     = form.label :beauty_bank
     = form.number_field :beauty_bank, class: 'form-control'
@@ -28,3 +31,8 @@
     = form.number_field :loyalty_points, class: 'form-control'
   .card-footer.pl-0
     = form.submit class: 'btn btn-primary'
+
+:javascript
+  $( function() {
+    $( ".datepicker" ).datepicker();
+  } );

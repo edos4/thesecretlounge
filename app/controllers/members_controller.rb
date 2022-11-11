@@ -19,10 +19,14 @@ class MembersController < ApplicationController
   end
 
   def index
-    @search = Member.reverse_chronologically.ransack(params[:q])
+    if params[:branch_id].present?
+      @members = Member.where(branch_id: params[:branch_id])
+    else
+      @members = Member.all
+    end
 
     respond_to do |format|
-      format.any(:html, :json) { @members = set_page_and_extract_portion_from @search.result }
+      format.any(:html, :json) { @members = @members }
       format.csv { render csv: @search.result }
     end
   end
