@@ -28,12 +28,14 @@
             %thead
               %tr
                 %th= sort_link_turbo(@search, :name)
+                %th Active
                 %th Expired
                 %th Actions
             %tbody{"data-target" => "infinite-page.container"}
               - @branches.each do |branch|
                 %tr{"data-target" => "infinite-page.item"}
                   %td= branch.name
+                  %td= branch.members.count - branch.expired_count
                   %td= branch.expired_count
                   %td
                     = link_to icon('fas fa-eye'), "/members?branch_id=#{branch.id}", title: 'Show it', class: 'btn btn-icon btn-sm btn-info mr-1'

@@ -60,7 +60,6 @@
       .card-header
         %h4 Expired
         .card-header-action
-          = link_to icon('fas fa-plus', 'New Member'), new_member_path, class: 'btn btn-icon icon-left btn-primary'
           = render 'shared/card_dropdown' do
             = link_to icon('fas fa-download', 'Export Data'), members_path(format: :csv, q: request.params[:q]), class: 'dropdown-item has-icon'
             = link_to icon('fas fa-print', 'Print Page'), 'javascript:window.print()', class: 'dropdown-item has-icon'
