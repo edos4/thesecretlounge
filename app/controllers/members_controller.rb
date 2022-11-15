@@ -34,7 +34,7 @@ class MembersController < ApplicationController
   def show
     fresh_when etag: @member
     @services = @member.member_services
-    @service_list = Service.all
+    @service_list = Service.all.order(:name).map{|u| [u.name, u.id.to_i]}
   end
 
   def new
