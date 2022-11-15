@@ -1,3 +1,9 @@
+%link{:href => "https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css", :rel => "stylesheet"}
+%link{:href => "https://cdn.datatables.net/responsive/2.2.7/css/responsive.dataTables.min.css", :rel => "stylesheet"}
+
+%script{:src => "https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js", :type => "text/javascript"}
+%script{:src => "https://cdn.datatables.net/responsive/2.2.7/js/dataTables.responsive.min.js", :type => "text/javascript"}
+
 %section.section
   .section-header.d-mobile-none
     %h1 Members
@@ -5,35 +11,81 @@
       .breadcrumb-item= link_to 'Dashboard', root_path
       .breadcrumb-item= link_to 'Members', members_path
       .breadcrumb-item Show Member
-  .section-body
-    .card
-      .card-header
-        %h4 Show Member
-      .card-body
-        %dl.row
-          %dt.col-sm-3 Name:
-          %dd.col-sm-9= @member.name
-          %dt.col-sm-3 Email:
-          %dd.col-sm-9= @member.email
-          %dt.col-sm-3 Contact number:
-          %dd.col-sm-9= @member.contact_number
-          %dt.col-sm-3 Address:
-          %dd.col-sm-9= @member.address
-          %dt.col-sm-3 Branch:
-          %dd.col-sm-9= @member.branch.name
-          %dt.col-sm-3 Membership card number:
-          %dd.col-sm-9= @member.membership_card_number
-          %dt.col-sm-3 Membership date:
-          %dd.col-sm-9= (@member.membership_date)
-          %dt.col-sm-3 Expiry date:
-          - if @member.expiry_date < Time.zone.now 
-            %dd.col-sm-9.alert-danger= (@member.expiry_date)
-          - else 
-            %dd.col-sm-9= (@member.expiry_date)
-          %dt.col-sm-3 Beauty bank:
-          %dd.col-sm-9= @member.beauty_bank
-          %dt.col-sm-3 Loyalty points:
-          %dd.col-sm-9= @member.loyalty_points
-= link_to icon('fas fa-edit', 'Edit'), edit_member_path(@member), data: { turbolinks_action: 'replace' }, class: 'btn btn btn-icon icon-left btn-warning'
-= link_to icon('fas fa-arrow-left', 'Back'), 'javascript:history.back()', class: 'btn btn-icon icon-left btn-secondary d-mobile-none'
+  .row
+    .col-md-6
+      .section-body
+        .card
+          .card-header
+            %h4 Show Member
+          .card-body
+            %dl.row
+              %dt.col-sm-3 Name:
+              %dd.col-sm-9= @member.name
+              %dt.col-sm-3 Email:
+              %dd.col-sm-9= @member.email
+              %dt.col-sm-3 Contact number:
+              %dd.col-sm-9= @member.contact_number
+              %dt.col-sm-3 Address:
+              %dd.col-sm-9= @member.address
+              %dt.col-sm-3 Branch:
+              %dd.col-sm-9= @member.branch.name
+              %dt.col-sm-3 Card number:
+              %dd.col-sm-9= @member.membership_card_number
+              %dt.col-sm-3 Membership date:
+              %dd.col-sm-9= (@member.membership_date)
+              %dt.col-sm-3 Expiry date:
+              - if @member.expiry_date < Time.zone.now 
+                %dd.col-sm-9.alert-danger= (@member.expiry_date)
+              - else 
+                %dd.col-sm-9= (@member.expiry_date)
+              %dt.col-sm-3 Beauty bank:
+              %dd.col-sm-9= @member.beauty_bank
+              %dt.col-sm-3 Loyalty points:
+              %dd.col-sm-9= @member.loyalty_points
+
+            = link_to icon('fas fa-edit', 'Edit'), edit_member_path(@member), data: { turbolinks_action: 'replace' }, class: 'btn btn btn-icon icon-left btn-warning'
+            = link_to icon('fas fa-arrow-left', 'Back'), 'javascript:history.back()', class: 'btn btn-icon icon-left btn-secondary d-mobile-none'
+    .col-md-6
+      .section-body
+        .card
+          .card-header
+            %h4 Services
+          .card-body
+            = form_with(id: 'citizen_form', url: "/add_member_service", model: Service) do |form|
+              .form-group
+                = form.label "Add Services: "
+                = form.select :tag_ids, @service_list.order(:name).map{|u| [u.name, u.id.to_i]}, {include_blank: true}, {class: 'chosen-select', multiple: true}
+                = form.hidden_field "member_id", value: @member.id
+                = form.submit 'Submit', class: 'btn btn-primary'
+            .table-responsive
+              %table.table.table-bordered.table-hover.dt-responsive
+                %thead
+                  %tr
+                    %th Name
+                    %th Date
+                    %th Actions
+                %tbody{"data-target" => "infinite-page.container"}
+                  - @services.each do |service|
+                    %tr{"data-target" => "infinite-page.item"}
+                      %td= service.service.name
+                      %td= service.service.created_at.strftime("%B %d, %Y")
+                      %td
+                        = link_to icon('fas fa-trash'), "/delete_service/#{service.id}", title: 'Destroy it', class: 'btn btn-icon btn-sm btn-danger', method: :get, data: { confirm: 'Are you sure?', remote: false }
+
 - content_for(:page_title, 'Show Member')
+
+:javascript
+  $(document).ready( function () {
+    $('#service_tag_ids').chosen({
+      allow_single_deselect: true,
+      width: '100%'
+    })
+
+    var dataTable = $('table').DataTable();
+    document.addEventListener("turbolinks:before-cache", function() {
+      if (dataTable !== null) {
+       dataTable.destroy();
+       dataTable = null;
+      }
+    });
+  });

@@ -1,7 +1,10 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
+  resources :services
   get '/scan', to: 'scans#index'
+  post '/add_member_service', to: 'members#add_service'
+  get '/delete_service/:id', to: 'members#delete_service'
   resources :members do 
     collection do
       get :import

@@ -33,6 +33,8 @@ class MembersController < ApplicationController
 
   def show
     fresh_when etag: @member
+    @services = @member.member_services
+    @service_list = Service.all
   end
 
   def new
@@ -66,6 +68,24 @@ class MembersController < ApplicationController
       format.html { redirect_to members_url, notice: 'Member was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def add_service
+    service_ids = params['service']['tag_ids'].reject(&:empty?).map(&:to_i)
+    member = Member.find(params['service']['member_id'])
+
+    service_ids.each do |si|
+      member.services << Service.find(si)
+    end
+
+    redirect_to "/members/#{member.id}"
+  end
+
+  def delete_service
+    member_service = MemberService.find(params[:id])
+    member = member_service.member
+    member_service.destroy
+    redirect_to "/members/#{member.id}"
   end
 
   private

@@ -14,6 +14,11 @@
         = link_to branches_path, class: "nav-link" do
           %i.fa.fa-city
           %span Branches
+    %ul.sidebar-menu{"data-controller" => "sidebar"}
+      %li{:class => "#{active_nav_item('services', 'index')}"}
+        = link_to services_path, class: "nav-link" do
+          %i.fa.fa-briefcase
+          %span Services
     
     %ul.sidebar-menu{"data-controller" => "sidebar"}
       %li{:class => "#{active_nav_item('members', 'index')}"}
