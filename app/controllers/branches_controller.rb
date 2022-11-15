@@ -2,10 +2,11 @@ class BranchesController < ApplicationController
   before_action :set_branch, only: %i[ show edit update destroy ]
 
   def index
-    @search = Branch.reverse_chronologically.ransack(params[:q])
+    #@search = Branch.reverse_chronologically.ransack(params[:q])
+    @branches = Branch.all
 
     respond_to do |format|
-      format.any(:html, :json) { @branches = set_page_and_extract_portion_from @search.result }
+      format.any(:html, :json) { @branches = @branches }
       format.csv { render csv: @search.result }
     end
   end
