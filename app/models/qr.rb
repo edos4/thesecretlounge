@@ -1,5 +1,5 @@
 class Qr < ApplicationRecord 
-  def self.printqr(str,folder_name, member_name)
+  def self.printqr(str,folder_name, member_name, member)
     require 'rqrcode_png'
     require 'fileutils'
     # replace first_name and last_name
@@ -12,7 +12,7 @@ class Qr < ApplicationRecord
 
     dir = Rails.root.join('app/public', "uploads/#{folder_name}")
     FileUtils.mkdir_p(dir) unless Dir.exist?(dir)
-    qr_filename = "#{dir.join("#{id}_#{member_name.gsub(" ", "").gsub(".", "")}.png")}"
+    qr_filename = "#{dir.join("#{id}_#{member.membership_card_number}.png")}"
 
     File.open(qr_filename, 'wb') {|f| 
       f.write @raw.as_png(
@@ -30,22 +30,22 @@ class Qr < ApplicationRecord
     img = Magick::ImageList.new(qr_filename)
     txt = Magick::Draw.new
       
-    qr_with_name = "#{dir.join("#{id}_#{member_name.gsub(" ", "").gsub(".", "")}.png")}"
+    qr_with_name = "#{dir.join("#{id}_#{member.membership_card_number}.png")}"
     #( Draw draw, width, height, x, y, “text to add”)
 
     file = File.new("#{qr_filename.split('.').first}.png", File::CREAT|File::TRUNC|File::RDWR, 0644)
 
     img.write(file)
 
-    source = Magick::Image.read("bg2.png").first
+    source = Magick::Image.read("tsl_front.png").first
     overlay = Magick::Image.read(qr_with_name).first
     #nf = source.composite!(overlay, 890, 830, Magick::OverCompositeOp)
     # 1275 x 480
     nf = source.composite!(overlay, 0, 0, Magick::OverCompositeOp)
 
-    nf.annotate(txt, 600,1040,400,240, "#{member_name.upcase}".force_encoding("UTF-8")){
+    nf.annotate(txt, 600,1040,400,240, "#{member.membership_card_number}".force_encoding("UTF-8")){
       txt.gravity = Magick::ForgetGravity
-      txt.pointsize = (member_name.length) >= 13 ? 75 : 140 
+      txt.pointsize = (member.membership_card_number.length) >= 13 ? 75 : 140 
       txt.font = "#{Rails.root}/proximanova.ttf"
       txt.fill = '#000000'
     }

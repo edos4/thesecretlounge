@@ -9,7 +9,7 @@ class ImportsController < ApplicationController
     @folder_name = SecureRandom.hex
 
     Member.all.each do |member|
-      Qr.printqr("#{member.membership_card_number}", @folder_name, member.name)
+      Qr.printqr("#{member.membership_card_number}", @folder_name, member.name, member)
     end
 
     files = Dir.glob("app/public/uploads/#{@folder_name}/*final*.png")
