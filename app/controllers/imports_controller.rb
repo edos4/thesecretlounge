@@ -12,7 +12,7 @@ class ImportsController < ApplicationController
       Qr.printqr("#{member.membership_card_number}", @folder_name, member.name, member)
     end
 
-    files = Dir.glob("app/public/uploads/#{@folder_name}/*final*.png")
+    files = Dir.glob("app/public/uploads/#{@folder_name}/*.png")
     zip_file = "app/public/uploads/#{@folder_name}/qr_export.zip"
 
     File.delete(zip_file) if File.exist?(zip_file)
